@@ -3,19 +3,34 @@ import model.Projeto;
 public class Main
 {
     public static void main(String[] args)
-    Projeto projeto = new Projeto();
-    projeto.setId(1);
-    projeto.setNome("Sistema Acadêmico");
-    projeto.setDescricao("Sistema para gerenciamento acadêmico");
-    projeto.setCategoria("Software");
-    projeto.setStatus("Em desenvolvimento");
+    Projeto projeto = new Projeto(
+    1,
+    "Sistema Acadêmico",
+    "Sistema para gerenciamento acadêmico",
+    "Software",
+    "Em desenvolvimento"
+);
+Projeto projeto2 = new Projeto(
+            2,
+            "Site Institucional",
+            "Website de uma instituição",
+            "Web",
+            "Concluído"
+        );
 
-    System.out.println(projeto.getId());
-    System.out.println(projeto.getNome());
-    System.out.println(projeto.getDescricao());
-    System.out.println(projeto.getCategoria());
-    System.out.println(projeto.getStatus());
+    System.out.println("PROJETO 1");
+        System.out.println(projeto1.getNome());
+        System.out.println(projeto1.getCategoria());
+        System.out.println(projeto1.getStatus());
 
+        System.out.println();
+
+        System.out.println("PROJETO 2");
+        System.out.println(projeto2.getNome());
+        System.out.println(projeto2.getCategoria());
+        System.out.println(projeto2.getStatus());
+
+        projeto1.exibirDados();
 
     {
         System.out.println("==============================");
