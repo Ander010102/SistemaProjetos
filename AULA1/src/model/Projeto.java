@@ -3,12 +3,33 @@ package model;
 public class Projeto {
     private int id;
     private String nome;
-    private String descrição;
+    private String descricao;
     private String categoria;
     private String status;
+
+    public Projeto() {
+
+    }
+    public Projeto(int id, String nome, String descricao,
+               String categoria, String status) {
+
+    this.id = id;
+    this.nome = nome;
+    this.descricao = descricao;
+    this.categoria = categoria;
+    this.status = status;
 }
 
-public int getId(){
+public void exibirDados() {
+
+    System.out.println("ID: " + id);
+    System.out.println("Nome: " + nome);
+    System.out.println("Descrição: " + descricao);
+    System.out.println("Categoria: " + categoria);
+    System.out.println("Status: " + status);
+}
+
+    public int getId(){
         return id;
     }
      public void setId(int id) {
@@ -46,3 +67,4 @@ public int getId(){
     }
 
 }
+s
