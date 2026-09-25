@@ -1,0 +1,12 @@
+id;nome;descricao;categoria;status
+1;Sistema Academico;Sistema de gerenciamento academico;Software;Em desenvolvimento
+2;Site Institucional;Website institucional;Web;Concluido
+3;Aplicativo Mobile;Aplicativo para servicos;Mobile;Planejado
+
+service.carregar();
+
+for (Projeto projeto : service.listar()) {
+
+    projeto.exibirDados();
+
+}
