@@ -1,5 +1,9 @@
+package view;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import model.Projeto;
+import service.ProjetoService;
 
 public class TelaProjetos extends JFrame {
 
@@ -15,6 +19,8 @@ public class TelaProjetos extends JFrame {
     private JButton botaoCadastrar;
     private JButton botaoLimpar;
 
+    private ProjetoService service;
+
     public TelaProjetos() {
 
         setTitle("Sistema de Projetos");
@@ -24,9 +30,22 @@ public class TelaProjetos extends JFrame {
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+        service = new ProjetoService();
+
+        try {
+            service.carregar();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(
+                this,
+                "Erro ao carregar os projetos: " + e.getMessage()
+            );
+        }
+
         criarComponentes();
 
         criarEventos();
+
+        carregarTabela();
     }
 
     private void criarComponentes() {
@@ -78,10 +97,12 @@ public class TelaProjetos extends JFrame {
         painelFormulario.add(botaoCadastrar);
         painelFormulario.add(botaoLimpar);
 
-        setLayout(new BoxLayout(
-            getContentPane(),
-            BoxLayout.Y_AXIS
-        ));
+        setLayout(
+            new BoxLayout(
+                getContentPane(),
+                BoxLayout.Y_AXIS
+            )
+        );
 
         add(painelFormulario);
 
@@ -90,9 +111,13 @@ public class TelaProjetos extends JFrame {
 
     private void criarEventos() {
 
-        botaoLimpar.addActionListener(e -> limparFormulario());
+        botaoLimpar.addActionListener(
+            e -> limparFormulario()
+        );
 
-        botaoCadastrar.addActionListener(e -> cadastrar());
+        botaoCadastrar.addActionListener(
+            e -> cadastrar()
+        );
     }
 
     private void limparFormulario() {
@@ -110,65 +135,111 @@ public class TelaProjetos extends JFrame {
 
     private void cadastrar() {
 
-    String nome = campoNome.getText();
-    String descricao = campoDescricao.getText();
-    String categoria =
-        comboCategoria.getSelectedItem().toString();
+        String nome = campoNome.getText();
 
-    String status =
-        comboStatus.getSelectedItem().toString();
+        String descricao = campoDescricao.getText();
 
-    if (nome.isBlank()) {
+        String categoria =
+            comboCategoria.getSelectedItem().toString();
 
-        JOptionPane.showMessageDialog(
-            this,
-            "Informe o nome."
+        String status =
+            comboStatus.getSelectedItem().toString();
+
+        if (nome.isBlank()) {
+
+            JOptionPane.showMessageDialog(
+                this,
+                "Informe o nome."
+            );
+
+            return;
+        }
+
+        int id = gerarNovoId();
+
+        Projeto projeto = new Projeto(
+            id,
+            nome,
+            descricao,
+            categoria,
+            status
         );
 
-        return;
+        boolean cadastrado =
+            service.adicionar(projeto);
+
+        if (!cadastrado) {
+
+            JOptionPane.showMessageDialog(
+                this,
+                "Não foi possível cadastrar o projeto."
+            );
+
+            return;
+        }
+
+        try {
+
+            service.salvar();
+
+            JOptionPane.showMessageDialog(
+                this,
+                "Projeto cadastrado com sucesso!"
+            );
+
+            limparFormulario();
+
+            carregarTabela();
+
+        } catch (Exception e) {
+
+            JOptionPane.showMessageDialog(
+                this,
+                "Erro ao salvar o projeto: "
+                + e.getMessage()
+            );
+        }
     }
 
-    Projeto projeto = new Projeto(
-        nome,
-        descricao,
-        categoria,
-        status
-    );
+    private int gerarNovoId() {
 
-    service.adicionar(projeto);
+        int maiorId = 0;
 
-    service.salvar();
+        for (Projeto projeto : service.listar()) {
 
-    JOptionPane.showMessageDialog(
-        this,
-        "Projeto cadastrado com sucesso!"
-    );
+            if (projeto.getId() > maiorId) {
 
-    limparFormulario();
-
-    carregarTabela();
-}
-
-
-private void carregarTabela() {
-
-    modelo.setRowCount(0);
-
-    for (Projeto projeto : service.listar()) {
-
-        modelo.addRow(
-            new Object[]{
-                projeto.getId(),
-                projeto.getNome(),
-                projeto.getCategoria(),
-                projeto.getStatus()
+                maiorId = projeto.getId();
             }
-        );
+        }
+
+        return maiorId + 1;
     }
-}
+
+    private void carregarTabela() {
+
+        modelo.setRowCount(0);
+
+        for (Projeto projeto : service.listar()) {
+
+            modelo.addRow(
+                new Object[] {
+                    projeto.getId(),
+                    projeto.getNome(),
+                    projeto.getCategoria(),
+                    projeto.getStatus()
+                }
+            );
+
+
+        }
+
+    }
+
     public static void main(String[] args) {
 
-        TelaProjetos tela = new TelaProjetos();
+        TelaProjetos tela =
+            new TelaProjetos();
 
         tela.setVisible(true);
     }
