@@ -3,10 +3,3 @@ id;nome;descricao;categoria;status
 2;Site Institucional;Website institucional;Web;Concluido
 3;Aplicativo Mobile;Aplicativo para servicos;Mobile;Planejado
 
-service.carregar();
-
-for (Projeto projeto : service.listar()) {
-
-    projeto.exibirDados();
-
-}
